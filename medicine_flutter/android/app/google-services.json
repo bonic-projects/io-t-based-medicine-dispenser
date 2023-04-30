@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "749834940793",
+    "firebase_url": "https://medicine-dispenser-baaf9-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "medicine-dispenser-baaf9",
+    "storage_bucket": "medicine-dispenser-baaf9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:749834940793:android:6afa6223b84298e2517fa8",
+        "android_client_info": {
+          "package_name": "com.example.medicine"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "749834940793-cndqe2gbt73l9jin2v74uohlq10qktp1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDkiMqtvcMeN24Q3ArAg6LZ3Eo7BTL6Jdk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "749834940793-cndqe2gbt73l9jin2v74uohlq10qktp1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
