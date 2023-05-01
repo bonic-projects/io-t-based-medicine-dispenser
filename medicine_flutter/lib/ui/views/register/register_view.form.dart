@@ -11,6 +11,8 @@ import 'package:medicine/constants/validators.dart';
 import 'package:stacked/stacked.dart';
 
 const String NameValueKey = 'name';
+const String RfidValueKey = 'rfid';
+const String PinValueKey = 'pin';
 const String EmailValueKey = 'email';
 const String PasswordValueKey = 'password';
 
@@ -21,6 +23,8 @@ final Map<String, FocusNode> _RegisterViewFocusNodes = {};
 
 final Map<String, String? Function(String?)?> _RegisterViewTextValidations = {
   NameValueKey: FormValidators.validateText,
+  RfidValueKey: FormValidators.validateRFID,
+  PinValueKey: FormValidators.validatePin,
   EmailValueKey: FormValidators.validateEmail,
   PasswordValueKey: FormValidators.validatePassword,
 };
@@ -28,11 +32,17 @@ final Map<String, String? Function(String?)?> _RegisterViewTextValidations = {
 mixin $RegisterView on StatelessWidget {
   TextEditingController get nameController =>
       _getFormTextEditingController(NameValueKey);
+  TextEditingController get rfidController =>
+      _getFormTextEditingController(RfidValueKey);
+  TextEditingController get pinController =>
+      _getFormTextEditingController(PinValueKey);
   TextEditingController get emailController =>
       _getFormTextEditingController(EmailValueKey);
   TextEditingController get passwordController =>
       _getFormTextEditingController(PasswordValueKey);
   FocusNode get nameFocusNode => _getFormFocusNode(NameValueKey);
+  FocusNode get rfidFocusNode => _getFormFocusNode(RfidValueKey);
+  FocusNode get pinFocusNode => _getFormFocusNode(PinValueKey);
   FocusNode get emailFocusNode => _getFormFocusNode(EmailValueKey);
   FocusNode get passwordFocusNode => _getFormFocusNode(PasswordValueKey);
 
@@ -58,6 +68,8 @@ mixin $RegisterView on StatelessWidget {
   /// with the latest textController values
   void syncFormWithViewModel(FormViewModel model) {
     nameController.addListener(() => _updateFormData(model));
+    rfidController.addListener(() => _updateFormData(model));
+    pinController.addListener(() => _updateFormData(model));
     emailController.addListener(() => _updateFormData(model));
     passwordController.addListener(() => _updateFormData(model));
   }
@@ -68,6 +80,8 @@ mixin $RegisterView on StatelessWidget {
       'This feature was deprecated after 3.1.0.')
   void listenToFormUpdated(FormViewModel model) {
     nameController.addListener(() => _updateFormData(model));
+    rfidController.addListener(() => _updateFormData(model));
+    pinController.addListener(() => _updateFormData(model));
     emailController.addListener(() => _updateFormData(model));
     passwordController.addListener(() => _updateFormData(model));
   }
@@ -84,6 +98,8 @@ mixin $RegisterView on StatelessWidget {
       model.formValueMap
         ..addAll({
           NameValueKey: nameController.text,
+          RfidValueKey: rfidController.text,
+          PinValueKey: pinController.text,
           EmailValueKey: emailController.text,
           PasswordValueKey: passwordController.text,
         }),
@@ -97,6 +113,8 @@ mixin $RegisterView on StatelessWidget {
   void _updateValidationData(FormViewModel model) =>
       model.setValidationMessages({
         NameValueKey: _getValidationMessage(NameValueKey),
+        RfidValueKey: _getValidationMessage(RfidValueKey),
+        PinValueKey: _getValidationMessage(PinValueKey),
         EmailValueKey: _getValidationMessage(EmailValueKey),
         PasswordValueKey: _getValidationMessage(PasswordValueKey),
       });
@@ -130,6 +148,8 @@ extension ValueProperties on FormViewModel {
   bool get isFormValid =>
       this.fieldsValidationMessages.values.every((element) => element == null);
   String? get nameValue => this.formValueMap[NameValueKey] as String?;
+  String? get rfidValue => this.formValueMap[RfidValueKey] as String?;
+  String? get pinValue => this.formValueMap[PinValueKey] as String?;
   String? get emailValue => this.formValueMap[EmailValueKey] as String?;
   String? get passwordValue => this.formValueMap[PasswordValueKey] as String?;
 
@@ -143,6 +163,32 @@ extension ValueProperties on FormViewModel {
 
     if (_RegisterViewTextEditingControllers.containsKey(NameValueKey)) {
       _RegisterViewTextEditingControllers[NameValueKey]?.text = value ?? '';
+    }
+  }
+
+  set rfidValue(String? value) {
+    this.setData(
+      this.formValueMap
+        ..addAll({
+          RfidValueKey: value,
+        }),
+    );
+
+    if (_RegisterViewTextEditingControllers.containsKey(RfidValueKey)) {
+      _RegisterViewTextEditingControllers[RfidValueKey]?.text = value ?? '';
+    }
+  }
+
+  set pinValue(String? value) {
+    this.setData(
+      this.formValueMap
+        ..addAll({
+          PinValueKey: value,
+        }),
+    );
+
+    if (_RegisterViewTextEditingControllers.containsKey(PinValueKey)) {
+      _RegisterViewTextEditingControllers[PinValueKey]?.text = value ?? '';
     }
   }
 
@@ -175,6 +221,12 @@ extension ValueProperties on FormViewModel {
   bool get hasName =>
       this.formValueMap.containsKey(NameValueKey) &&
       (nameValue?.isNotEmpty ?? false);
+  bool get hasRfid =>
+      this.formValueMap.containsKey(RfidValueKey) &&
+      (rfidValue?.isNotEmpty ?? false);
+  bool get hasPin =>
+      this.formValueMap.containsKey(PinValueKey) &&
+      (pinValue?.isNotEmpty ?? false);
   bool get hasEmail =>
       this.formValueMap.containsKey(EmailValueKey) &&
       (emailValue?.isNotEmpty ?? false);
@@ -184,6 +236,10 @@ extension ValueProperties on FormViewModel {
 
   bool get hasNameValidationMessage =>
       this.fieldsValidationMessages[NameValueKey]?.isNotEmpty ?? false;
+  bool get hasRfidValidationMessage =>
+      this.fieldsValidationMessages[RfidValueKey]?.isNotEmpty ?? false;
+  bool get hasPinValidationMessage =>
+      this.fieldsValidationMessages[PinValueKey]?.isNotEmpty ?? false;
   bool get hasEmailValidationMessage =>
       this.fieldsValidationMessages[EmailValueKey]?.isNotEmpty ?? false;
   bool get hasPasswordValidationMessage =>
@@ -191,12 +247,18 @@ extension ValueProperties on FormViewModel {
 
   String? get nameValidationMessage =>
       this.fieldsValidationMessages[NameValueKey];
+  String? get rfidValidationMessage =>
+      this.fieldsValidationMessages[RfidValueKey];
+  String? get pinValidationMessage =>
+      this.fieldsValidationMessages[PinValueKey];
   String? get emailValidationMessage =>
       this.fieldsValidationMessages[EmailValueKey];
   String? get passwordValidationMessage =>
       this.fieldsValidationMessages[PasswordValueKey];
   void clearForm() {
     nameValue = '';
+    rfidValue = '';
+    pinValue = '';
     emailValue = '';
     passwordValue = '';
   }
@@ -205,6 +267,10 @@ extension ValueProperties on FormViewModel {
 extension Methods on FormViewModel {
   setNameValidationMessage(String? validationMessage) =>
       this.fieldsValidationMessages[NameValueKey] = validationMessage;
+  setRfidValidationMessage(String? validationMessage) =>
+      this.fieldsValidationMessages[RfidValueKey] = validationMessage;
+  setPinValidationMessage(String? validationMessage) =>
+      this.fieldsValidationMessages[PinValueKey] = validationMessage;
   setEmailValidationMessage(String? validationMessage) =>
       this.fieldsValidationMessages[EmailValueKey] = validationMessage;
   setPasswordValidationMessage(String? validationMessage) =>

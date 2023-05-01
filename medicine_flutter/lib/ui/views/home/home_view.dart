@@ -17,14 +17,14 @@ class HomeView extends StackedView<HomeViewModel> {
   ) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Doctor Robo'),
+          title: const Text('Medicine Dispenser'),
           actions: [
+            const IsOnlineWidget(),
             if (viewModel.user != null)
               IconButton(
                 onPressed: viewModel.logout,
                 icon: const Icon(Icons.logout),
               ),
-            IsOnlineWidget()
           ],
         ),
         body: Container(

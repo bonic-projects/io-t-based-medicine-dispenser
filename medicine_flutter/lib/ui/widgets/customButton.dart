@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:medicine/ui/common/app_colors.dart';
 
 class CustomButton extends StatelessWidget {
   final void Function()? onTap;
@@ -16,23 +17,31 @@ class CustomButton extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: isLoading
-          ? const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: CircularProgressIndicator(strokeWidth: 2),
+          ? const Center(
+              child: Padding(
+                padding: EdgeInsets.all(8.0),
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
             )
           : TextButton(
               onPressed: onTap,
-              child: Container(
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.teal,
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(minWidth: 120),
+                child: Container(
+                    decoration: BoxDecoration(
+                        border: Border.all(
+                          color: kcPrimaryColor,
+                        ),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(20))),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Text(
+                        text,
+                        textAlign: TextAlign.center,
                       ),
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(40))),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text(text),
-                  )),
+                    )),
+              ),
             ),
     );
   }

@@ -11,40 +11,48 @@ class IsOnlineWidget extends StatelessWidget {
     return ViewModelBuilder<OnlineStatusViewModel>.reactive(
       onViewModelReady: (model) => model.setTimer(),
       builder: (context, model, child) {
-        if (model.isOnline) {
-          return Center(
-              child: Padding(
-            padding: const EdgeInsets.only(right: 8.0),
-            child: Row(
-              children: const [
-                Text(
-                  'Online',
-                  style: TextStyle(
-                    color: Colors.green,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                Icon(
-                  Icons.circle,
-                  color: Colors.green,
-                  size: 16,
-                )
-              ],
-            ),
-          ));
-        } else {
-          return const Center(
-              child: Padding(
-            padding: EdgeInsets.only(right: 8.0),
-            child: Text(
-              'Offline',
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              'Atm: ',
               style: TextStyle(
-                color: Colors.red,
                 fontWeight: FontWeight.w500,
               ),
             ),
-          ));
-        }
+            if (model.isOnline)
+              const Icon(
+                Icons.circle,
+                color: Colors.green,
+                size: 16,
+              )
+            else
+              const Icon(
+                Icons.circle,
+                color: Colors.red,
+                size: 16,
+              ),
+            const SizedBox(width: 10),
+            const Text(
+              'Pin: ',
+              style: TextStyle(
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            if (model.isOnlineBand)
+              const Icon(
+                Icons.circle,
+                color: Colors.green,
+                size: 16,
+              )
+            else
+              const Icon(
+                Icons.circle,
+                color: Colors.red,
+                size: 16,
+              )
+          ],
+        );
       },
       viewModelBuilder: () => OnlineStatusViewModel(),
     );

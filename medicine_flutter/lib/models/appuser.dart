@@ -1,32 +1,32 @@
 class AppUser {
   final String id;
   final String fullName;
-  // final String token;
+  final String rfid;
   final DateTime registeredOn;
   final String email;
-  // final int age;
+  final String pin;
   // final String gender;
   final String userRole;
 
   AppUser(
       {required this.id,
       required this.fullName,
-      // required this.token,
+      required this.rfid,
       required this.registeredOn,
       required this.email,
-      // required this.age,
+      required this.pin,
       // required this.gender,
       required this.userRole});
 
   AppUser.fromData(Map<String, dynamic> data)
       : id = data['id'],
         fullName = data['fullName'],
-        // token = data['token'] ?? "",
+        rfid = data['rfid'] ?? "",
         registeredOn = data['tokenTime'] != null
             ? data['tokenTime'].toDate()
             : DateTime(2022),
         email = data['email'],
-        // age = data['age'],
+        pin = data['pin'] ?? "",
         // gender = data['gender'],
         userRole = data['userRole'] ?? "user";
 
@@ -34,11 +34,11 @@ class AppUser {
     return {
       'id': id,
       'fullName': fullName,
-      // 'token': token,
+      'rfid': rfid,
       'tokenTime': registeredOn,
       'keyword': keyword,
       'email': email,
-      // 'age': age,
+      'pin': pin,
       // 'gender': gender,
       'userRole': userRole,
     };

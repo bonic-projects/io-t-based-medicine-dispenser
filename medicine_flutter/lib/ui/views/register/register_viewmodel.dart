@@ -30,6 +30,8 @@ class RegisterViewModel extends FormViewModel {
         // (_userRole == "doctor" &&
         isFormValid &&
             hasEmail &&
+            hasRfid &&
+            hasPin &&
             // hasSpecialization &&
             hasPassword &&
             hasName
@@ -63,13 +65,13 @@ class RegisterViewModel extends FormViewModel {
             fullName: nameValue!,
             registeredOn: DateTime(2022),
             email: result.user!.email!,
-            // age: int.parse(ageValue!),
-            // gender: genderValue!,
+            pin: pinValue!,
+            rfid: rfidValue!,
             userRole: "user",
           ),
         );
         if (error == null) {
-          _navigationService.replaceWithHomeView();
+          _navigationService.pushNamedAndRemoveUntil(Routes.homeView);
         } else {
           log.i("Firebase error");
           _bottomSheetService.showCustomSheet(

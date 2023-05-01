@@ -11,10 +11,14 @@ import 'register_view.form.dart';
     name: 'name',
     validator: FormValidators.validateText,
   ),
-  // FormTextField(
-  //   name: 'age',
-  //   validator: FormValidators.validateNumber,
-  // ),
+  FormTextField(
+    name: 'rfid',
+    validator: FormValidators.validateRFID,
+  ),
+  FormTextField(
+    name: 'pin',
+    validator: FormValidators.validatePin,
+  ),
   // FormDropdownField(
   //   name: 'gender',
   //   items: [
@@ -99,25 +103,41 @@ class RegisterView extends StackedView<RegisterViewModel> with $RegisterView {
                         ),
                       ),
                       const SizedBox(height: 30),
-                      // ConstrainedBox(
-                      //   constraints: const BoxConstraints(
-                      //     maxWidth: 350,
-                      //   ),
-                      //   child: TextField(
-                      //     autofocus: true,
-                      //     decoration: InputDecoration(
-                      //       labelText: 'Age',
-                      //       errorText: viewModel.ageValidationMessage,
-                      //       errorMaxLines: 2,
-                      //     ),
-                      //     controller: ageController,
-                      //     keyboardType: const TextInputType.numberWithOptions(
-                      //         decimal: false, signed: false),
-                      //     focusNode: ageFocusNode,
-                      //   ),
-                      // ),
+                      ConstrainedBox(
+                        constraints: const BoxConstraints(
+                          maxWidth: 350,
+                        ),
+                        child: TextField(
+                          autofocus: true,
+                          decoration: InputDecoration(
+                            labelText: 'RFID',
+                            errorText: viewModel.rfidValidationMessage,
+                            errorMaxLines: 2,
+                          ),
+                          controller: rfidController,
+                          keyboardType: TextInputType.text,
+                          focusNode: rfidFocusNode,
+                        ),
+                      ),
+                      const SizedBox(height: 30),
+                      ConstrainedBox(
+                        constraints: const BoxConstraints(
+                          maxWidth: 350,
+                        ),
+                        child: TextField(
+                          autofocus: true,
+                          decoration: InputDecoration(
+                            labelText: 'Pin',
+                            errorText: viewModel.pinValidationMessage,
+                            errorMaxLines: 2,
+                          ),
+                          controller: pinController,
+                          keyboardType: const TextInputType.numberWithOptions(
+                              decimal: false, signed: false),
+                          focusNode: pinFocusNode,
+                        ),
+                      ),
                       // const SizedBox(height: 30),
-                      // if (viewModel.userRole == "doctor")
                       //   Column(
                       //     children: [
                       //       ConstrainedBox(
@@ -163,7 +183,7 @@ class RegisterView extends StackedView<RegisterViewModel> with $RegisterView {
                       //     )
                       //   ],
                       // ),
-                      // const SizedBox(height: 30),
+                      const SizedBox(height: 30),
                       ConstrainedBox(
                         constraints: const BoxConstraints(
                           maxWidth: 350,

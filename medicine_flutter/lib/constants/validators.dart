@@ -34,9 +34,35 @@ class FormValidators {
     return null;
   }
 
+  static String? validateRFID(String? value) {
+    if (value == null) {
+      return null;
+    }
+
+    if (value.length != 8) {
+      return 'Enter valid RFID.';
+    }
+    return null;
+  }
+
   static String? validateNumber(String? value) {
     if (value == null) {
       return null;
+    }
+    RegExp regex = RegExp(r'^\d+(?:\.\d+)?$');
+    if (!regex.hasMatch(value)) {
+      return 'Enter Valid Number';
+    } else {
+      return null;
+    }
+  }
+
+  static String? validatePin(String? value) {
+    if (value == null) {
+      return null;
+    }
+    if (value.length != 4) {
+      return 'Enter valid PIN of length 4 digits.';
     }
     RegExp regex = RegExp(r'^\d+(?:\.\d+)?$');
     if (!regex.hasMatch(value)) {

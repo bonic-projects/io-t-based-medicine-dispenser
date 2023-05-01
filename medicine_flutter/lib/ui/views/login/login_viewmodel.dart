@@ -4,6 +4,7 @@ import 'package:medicine/app/app.logger.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_firebase_auth/stacked_firebase_auth.dart';
 import 'package:stacked_services/stacked_services.dart';
+import '../../../app/app.router.dart';
 import 'login_view.form.dart';
 
 class LoginViewModel extends FormViewModel {
@@ -29,7 +30,7 @@ class LoginViewModel extends FormViewModel {
       );
       if (result.user != null) {
         if (result.user != null) {
-          _navigationService.back();
+          _navigationService.pushNamedAndRemoveUntil(Routes.homeView);
         }
       } else {
         log.i("Error: ${result.errorMessage}");

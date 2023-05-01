@@ -12,12 +12,13 @@ Servo myServo2;
 #define LED_R 32
 #define BUZZ_B 25
 
+String content= "";
+
+
 //Databse
 #include <Arduino.h>
 #include <WiFi.h>
 #include <FirebaseESP32.h>
-#include <Wire.h>
-#include "time.h"
 
 // Provide the token generation process info.
 #include "addons/TokenHelper.h"
@@ -25,8 +26,8 @@ Servo myServo2;
 #include "addons/RTDBHelper.h"
 
 // Insert your network credentials
-#define WIFI_SSID "Tina"
-#define WIFI_PASSWORD "tina1104"
+#define WIFI_SSID "Autobonics_4G"
+#define WIFI_PASSWORD "autobonics@27"
 
 // Insert Firebase project API Key
 #define API_KEY "AIzaSyCR6J8jgK9y-qyU2eQbegJhj7QaviiWiFA"
@@ -48,14 +49,11 @@ String uid;
 // Database main path (to be updated in setup with the user UID)
 String databasePath;
 
-int timestamp;
 FirebaseJson json;
-
-const char* ntpServer = "pool.ntp.org";
 
 // Timer variables (send new readings every three minutes)
 unsigned long sendDataPrevMillis = 0;
-unsigned long timerDelay = 180000;
+unsigned long timerDelay = 5000;
 
 bool isrRegMod = false;
 bool isrWorkMod = true;
@@ -79,6 +77,7 @@ void streamCallback(StreamData data)
   FirebaseJsonData redLedFB;
   FirebaseJsonData greenLedFB;
   FirebaseJsonData buzzerFB;
+  FirebaseJsonData resetFb;
     
   jVal.get(isrRegModFB, "isrRegMod");
   jVal.get(isrWorkModFB, "isrWorkMod");
@@ -87,16 +86,7 @@ void streamCallback(StreamData data)
   jVal.get(redLedFB, "redLed");
   jVal.get(greenLedFB, "greenLed");
   jVal.get(buzzerFB, "buzzer");
-    
-  // if (l1.success && l2.success && l3.success && l4.success && l5.success)
-  // {
-  //   Serial.println("Success data");
-  //   l1Value = l1.to<int>();
-  //   l2Value = l2.to<int>();
-  //   l3Value = l3.to<int>();
-  //   l4Value = l4.to<int>();
-  //   l5Value = l5.to<int>();   
-  // }
+  jVal.get(resetFb, "reset");
 
   if (isrRegModFB.success)
   {
@@ -110,39 +100,39 @@ void streamCallback(StreamData data)
   }
     if (servo1FB.success)
   {
-    Serial.println("Success data");
-    bool value = servo1FB.to<int>(); 
+    Serial.println("Success data servo1FB");
+    int value = servo1FB.to<int>(); 
     myServo1.write(value); 
   }
     if (servo2FB.success)
   {
-    Serial.println("Success data");
-    bool value = servo2FB.to<int>(); 
+    Serial.println("Success data servo2FB");
+    int value = servo2FB.to<int>(); 
     myServo2.write(value); 
   }
   if (greenLedFB.success)
   {
     Serial.println("Success data");
     bool value = greenLedFB.to<bool>(); 
-    digitalWrite(LED_G, HIGH);
-  } else {
-    digitalWrite(LED_G, LOW);
+    digitalWrite(LED_G, value);
   }
   if (redLedFB.success)
   {
     Serial.println("Success data");
     bool value = redLedFB.to<bool>(); 
-    digitalWrite(LED_R, HIGH);  
-  } else {
-    digitalWrite(LED_R, LOW);
+    digitalWrite(LED_R, value);  
   }
   if (buzzerFB.success)
   {
     Serial.println("Success data");
     bool value = buzzerFB.to<bool>(); 
-    digitalWrite(BUZZ_B, HIGH);  
-  } else {
-    digitalWrite(BUZZ_B, LOW);
+    digitalWrite(BUZZ_B, value);  
+  }
+  if (resetFb.success)
+  {
+    Serial.println("Success data resetFb");
+    bool value = buzzerFB.to<bool>(); 
+    content=""; 
   }
 }
 
@@ -175,17 +165,6 @@ void initWiFi() {
   Serial.println();
 }
 
-// Function that gets current epoch time
-unsigned long getTime() {
-  time_t now;
-  struct tm timeinfo;
-  if (!getLocalTime(&timeinfo)) {
-    //Serial.println("Failed to obtain time");
-    return(0);
-  }
-  time(&now);
-  return now;
-}
 
 void setup() {
   pinMode(LED_G, OUTPUT);
@@ -207,10 +186,16 @@ void setup() {
 
   Serial.begin(115200);
 
+  // myServo1.write(50);
+  // delay(1000);
+  // myServo1.write(140);
+
+  // myServo2.write(50);
+  // delay(1000);
+  // myServo2.write(140);
+
   //Database
   initWiFi();
-  configTime(0, 0, ntpServer);
-
   // Assign the api key (required)
   config.api_key = API_KEY;
 
@@ -245,8 +230,7 @@ void setup() {
   Serial.println(uid);
 
   // Update database path
-  databasePath = "/atm/" + uid + "/data";
-
+  databasePath = "atm/" + uid + "/reading";
 
    //Stream setup
   if (!Firebase.beginStream(stream, "atm/" + uid + "/data"))
@@ -255,25 +239,13 @@ void setup() {
   Firebase.setStreamCallback(stream, streamCallback, streamTimeoutCallback);
 }
 
-String content= "";
 
 void loop() {
   readRFID();
   
-//  digitalWrite(LED_G, HIGH);
-//  digitalWrite(LED_R, HIGH);
-//  digitalWrite(BUZZ_B, HIGH);
-//  myServo1.write(90);
-//  myServo2.write(90);
-//  delay(1000);
-//  digitalWrite(LED_G, LOW);
-//  digitalWrite(LED_R, LOW);
-//  digitalWrite(BUZZ_B, LOW);
-//  myServo1.write(0);
-//  myServo2.write(0);
-  
-  delay(1000);  
-  
+if (Firebase.ready() && (millis() - sendDataPrevMillis > timerDelay || sendDataPrevMillis == 0)){
+    sendData();        
+  }
 }
 
 void readRFID(void ) { /* function readRFID */
@@ -307,7 +279,7 @@ void printHex(byte *buffer, byte bufferSize) {
   for (byte i = 0; i < bufferSize; i++) {
     Serial.print(buffer[i] < 0x10 ? " 0" : " ");
     Serial.print(buffer[i], HEX);
-    content.concat(String(buffer[i] < 0x10 ? " 0" : " "));
+    content.concat(String(buffer[i] < 0x10 ? "0" : ""));
     content.concat(String(buffer[i], HEX));
   }
   Serial.print("Content: ");
@@ -317,18 +289,12 @@ void printHex(byte *buffer, byte bufferSize) {
 
 void sendData (){
   // Send new readings to database
-    if (Firebase.ready()){
 
-//  if (Firebase.ready() && (millis() - sendDataPrevMillis > timerDelay || sendDataPrevMillis == 0)){
+ if (Firebase.ready()){
     sendDataPrevMillis = millis();
 
-    //Get current timestamp
-    timestamp = getTime();
-    Serial.print ("time: ");
-    Serial.println (timestamp);
-
     json.set("rfid", content);
-    json.set("time", String(timestamp));
+    json.set("ts/.sv", F("timestamp"));
     Serial.printf("Set json... %s\n", Firebase.RTDB.setJSON(&fbdo, databasePath.c_str(), &json) ? "ok" : fbdo.errorReason().c_str());
-  }
+}
 }
